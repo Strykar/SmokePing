@@ -1,0 +1,21 @@
+[Unit]
+Description=Smokeping slave service to connect to remote Smokeping master
+After=network.target
+After=systemd-user-sessions.service
+After=network-online.target
+
+[Service]
+User=smokeping
+ExecStart=/usr/bin/smokeping --master-url=https://your.site.url/smokeping.cgi --cache-dir=/var/smokeping/ --shared-secret=/var/smokeping/secret.txt --pid-dir /run
+ExecReload=/usr/bin/kill -HUP $MAINPID
+StandardError=syslog
+Type=forking
+PIDFile=/run/smokeping.pid
+TimeoutSec=30
+Restart=on-failure
+RestartSec=30
+StartLimitInterval=350
+StartLimitBurst=10
+
+[Install]
+WantedBy=multi-user.target
